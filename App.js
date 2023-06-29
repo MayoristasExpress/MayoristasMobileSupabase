@@ -3,7 +3,6 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import Auth from './components/auth_supabase/Auth';
 import Accounts from './components/auth_supabase/Account';
 import { StyleSheet } from 'react-native';
-import { Session } from '@supabase/supabase-js';
 import { AppContext, Micontexto } from './context/context';
 import Loading from './components/loading/Loading';
 import { NavigationContainer } from '@react-navigation/native';
@@ -75,6 +74,8 @@ const styles = StyleSheet.create({
 })
 export default () => (
   <AppContext>
+  
     <App />
+    
   </AppContext>
 );

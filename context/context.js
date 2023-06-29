@@ -17,7 +17,6 @@ const AppContext = ({ children }) => {
   const [session, setSession] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState('')
   const [datosUser, setDatosUser] = useState('')
-  
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -33,9 +32,10 @@ const AppContext = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (session ) {
+    if (session) {
       getProfile();
     }
+
   }, [session]);
 
   async function getProfile() {
@@ -126,8 +126,41 @@ const AppContext = ({ children }) => {
       setLoading(false);
     }
   }
+
+  // funcion para traerme los mayoristas 
+  const [dataMayoristas, setDataMayoristas] = useState([])
+  
+  const getUsersWithRolesAndDistributors = async () => {
+    try {
+      const { data } = await supabase
+        .from('users')
+        .select(`
+         full_name,
+         avatar_url,
+         distributors(*)
+        `)
+      const filteredData = data.filter((user) => user.distributors !== null);
+      setDataMayoristas(filteredData);
+      return data;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+ 
+  useEffect(() => {
+    getUsersWithRolesAndDistributors();
+  }, []);
+  
+
+
+
   /* ESTA FUNCION ES PARA TRAERNOS LA UBICACION DEL CLIENTE */
   const [location, setLocation] = useState(null);
+  const [datosLocation, setDatosLocation] = useState([])
+
+  console.log(datosLocation)
+  
   useEffect(() => {
     const getLocationAsync = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -135,18 +168,50 @@ const AppContext = ({ children }) => {
         console.log("Permission to access location was denied");
         return;
       }
-  
-      let locations = await Location.getCurrentPositionAsync({});
-      setLocation(locations);
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      if (dataMayoristas && location) {
+        const latitud = location.coords.latitude;
+        const longitud = location.coords.longitude;
+        const distances = dataMayoristas.map(local => {
+          const id = local.distributors.user_id;
+          const localLatitud = local.distributors.latitude;
+          const localLongitud = local.distributors.longitude;
+          const distance = calculateDistance(latitud, longitud, localLatitud, localLongitud);
+          return { id, distance };
+        });
+
+        const sortedLocations = distances.sort((a, b) => a.distance - b.distance);
+        const nearest = sortedLocations.slice(0, 5);
+       
+        setDatosLocation(nearest);
+      }
+
     };
-  
     getLocationAsync();
-  }, []);
-  useEffect(() => {
-    if (location !== null) {
-      console.log(location);
-    }
-  }, [location]);
+  }, [dataMayoristas]);
+  
+
+  //funcion para calcular el radio de la tierra y comparar la distancia entre el punto A y B
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radio de la Tierra en kilómetros
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+  }
+
+  function toRadians(degrees) {
+    return degrees * (Math.PI / 180);
+  }
+ 
+ 
 
   return (
     <Micontexto.Provider value={{
@@ -169,7 +234,10 @@ const AppContext = ({ children }) => {
       getProfile,
       datas,
       location,
-      datosUser
+      datosUser,
+      dataMayoristas,
+      setDataMayoristas,
+      datosLocation
     }}>
       {children}
     </Micontexto.Provider>
