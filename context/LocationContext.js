@@ -8,7 +8,7 @@ const LocationProvider = ({ children }) => {
   const [dataMayoristas, setDataMayoristas] = useState([])
   const [location, setLocation] = useState(null);
   const [datosLocation, setDatosLocation] = useState([])
-
+  
   const getUsersWithRolesAndDistributors = async () => {
     try {
       const { data } = await supabase
@@ -18,20 +18,25 @@ const LocationProvider = ({ children }) => {
          avatar_url,
          distributors(*)
         `)
-      const filteredData = data.filter((user) => user.distributors !== null);
-      setDataMayoristas(filteredData);
-      return data;
+      if (data) {
+        const filteredData = data.filter((user) => user.distributors !== null);
+        setDataMayoristas(filteredData);
+        return data;
+      } else {
+        console.log("Data is null");
+        return null;
+      }
     } catch (error) {
       console.error(error);
       return null;
     }
   };
-
+  
   useEffect(() => {
     getUsersWithRolesAndDistributors();
   }, []);
 
-
+  console.log(datosLocation)
   /* ESTA FUNCION ES PARA TRAERNOS LA UBICACION DEL CLIENTE */
   
   useEffect(() => {

@@ -4,13 +4,10 @@ import Menus from "../components/Drawer/MenuHamburguesa";
 import Search from "../components/SearchBar/Search";
 import CarouselOferHome from "../components/carousel/OfertCarouselHome";
 import {  supabase } from '../lib/supabase';
-
+import MayoristasCarousel from "../components/carousel/MayoristasCarousel";
 
 
 const Pantalla = () => {
- 
-
- 
 
   
   return (
@@ -24,8 +21,7 @@ const Pantalla = () => {
         </View>
       </View>
       <CarouselOferHome />
-
-
+      <MayoristasCarousel/>
       <Button title="Cerrar sesión" onPress={() => supabase.auth.signOut()} />
     </View>
   );
