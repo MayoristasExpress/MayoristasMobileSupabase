@@ -1,11 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { TextInput, View, DefaultTheme } from 'react-native-paper';
-import { Micontexto } from '../../context/context';
-
+import { AppContext } from '../../context/AppContext';
 
 const UserEmail = () => {
     const [isFocused, setIsFocused] = useState(false);
-    const { inputEmail, setInputEmail } = useContext(Micontexto)
+    const { inputEmail, setInputEmail } = useContext(AppContext)
     const handleFocus = () => {
         setIsFocused(true);
     };
@@ -41,4 +40,5 @@ const UserEmail = () => {
 }
 
 export default UserEmail; 
+
 

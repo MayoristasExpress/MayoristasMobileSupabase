@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { TextInput, DefaultTheme } from 'react-native-paper';
-import { Micontexto } from '../../context/context';
+import { AppContext } from '../../context/AppContext';
 
 const UserName = () => {
     const [isFocused, setIsFocused] = useState(false);
-    const { inputUserName, setInputUserName } = useContext(Micontexto)
+    const { inputUserName, setInputUserName } = useContext(AppContext)
     const handleFocus = () => {
         setIsFocused(true);
     };

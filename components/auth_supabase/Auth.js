@@ -3,12 +3,12 @@ import { Alert, StyleSheet, View, Image, KeyboardAvoidingView } from 'react-nati
 import { supabase } from '../../lib/supabase';
 import { Button,} from 'react-native-elements';
 import UserEmail from '../inputs/Email';
-import { Micontexto } from '../../context/context';
 import PassValue from '../inputs/Pass';
 import Loading from '../loading/Loading';
+import { AppContext } from '../../context/AppContext';
 
 export default function Auth() {
-  const { inputEmail, inputPass } = useContext(Micontexto);
+  const { inputEmail, inputPass } = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [isLoadingAccount, setIsLoadingAccount] = useState(false); // Nueva variable de estado
 

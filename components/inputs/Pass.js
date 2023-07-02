@@ -1,11 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { TextInput, View, DefaultTheme } from 'react-native-paper';
-import { Micontexto } from '../../context/context';
-
+import { TextInput, DefaultTheme } from 'react-native-paper';
+import { AppContext } from '../../context/AppContext';
 
 const PassValue = () => {
   const [isFocused, setIsFocused] = useState(false);
-  const { inputPass,setInputPass} = useContext(Micontexto);
+  const { inputPass,setInputPass} = useContext(AppContext);
 
   const handleFocus = () => {
     setIsFocused(true);

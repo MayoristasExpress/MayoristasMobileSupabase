@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-elements';
-import { Micontexto } from '../../context/context';
 import FullName from '../inputs/FullName';
 import Adress from '../inputs/Adress';
 import Avatars1 from '../inputs/Avatar';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { AppContext } from '../../context/AppContext';
 
 export default function Accounts() {
   const {
@@ -16,7 +16,7 @@ export default function Accounts() {
     avatarUrl,
     loading,
     updateProfile
-  } = useContext(Micontexto);
+  } = useContext(AppContext);
   const navigation = useNavigation();
 
 

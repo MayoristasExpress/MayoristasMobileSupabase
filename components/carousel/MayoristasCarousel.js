@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet, ScrollView, Image, TouchableOpacity, Text } from 'react-native';
-import { Micontexto } from '../../context/context';
+import { LocationContext } from '../../context/LocationContext';
 
 
 const MayoristasCarousel = () => {
- const {datamayoristas , datosLocation} = useContext(Micontexto)
+ const {datamayoristas , datosLocation} = useContext(LocationContext)
 
 
     

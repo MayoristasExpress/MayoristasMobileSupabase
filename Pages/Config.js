@@ -1,19 +1,19 @@
+import React, { useContext, useState } from "react";
 import { Text, View, StyleSheet, TouchableOpacity, Image, Modal, Button, TextInput } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
+import { AppContext } from "../context/AppContext";
 import Menus from "../components/Drawer/MenuHamburguesa";
 import Avatars1 from "../components/inputs/Avatar";
-import { Micontexto } from "../context/context";
-import { useContext, useState } from "react";
-import * as ImagePicker from 'expo-image-picker';
 import { supabase } from '../lib/supabase';
 
 const Ajustes = () => {
-  const { getProfile, session, setAvatarUrl, avatarUrl, datosUser
-  } = useContext(Micontexto);
+  const { getProfile, session, setAvatarUrl, avatarUrl, datosUser } = useContext(AppContext);
 
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [selectedSection, setSelectedSection] = useState('');
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handlePicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -25,38 +25,38 @@ const Ajustes = () => {
     } else {
       setAvatarUrl('');
     }
-
-
   };
+
   const modificar = (section) => {
     setSelectedSection(section);
     setIsPopupVisible(true);
+    setInputValue('');
+    setError('');
   };
 
   const handleInputChange = (text) => {
     setInputValue(text);
   };
 
-
   async function updateProfiles(updates) {
     try {
       if (!session?.user) {
         throw new Error('No user on the session!');
       }
-  
+
       updates.updated_at = new Date();
-  
+
       console.log('Updates:', updates);
-  
+
       const { error } = await supabase
         .from('users')
         .update(updates)
         .eq('id', session?.user.id);
-  
+
       if (error) {
         throw error;
       }
-  
+
       console.log('Profile updated successfully');
     } catch (error) {
       if (error instanceof Error) {
@@ -64,16 +64,21 @@ const Ajustes = () => {
       }
     }
   }
-  
 
+  const cambiarTodo = async () => {
+    if (!inputValue.trim()) {
+      setError('El campo debe contener información');
+      return;
+    }
 
-  const cambiarTodo = () => {
-    updateProfiles({
+    setIsLoading(true);
+    await updateProfiles({
       [selectedSection]: inputValue
     });
     getProfile();
+    setIsLoading(false);
+    setIsPopupVisible(false);
   };
-  
 
   return (
     <View style={styles.container}>
@@ -161,13 +166,18 @@ const Ajustes = () => {
             value={inputValue}
             onChangeText={handleInputChange}
           />
-          <Button title="Aceptar" onPress={() => cambiarTodo()} />
-          <Button title="Aceptar" onPress={() => setIsPopupVisible(false)} />
+          {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
+          <Button
+            title="Aceptar"
+            onPress={() => cambiarTodo()}
+            disabled={isLoading}
+          />
+          <Button title="Cerrar" onPress={() => setIsPopupVisible(false)} />
         </View>
       </Modal>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -245,6 +255,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
     padding: 20,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: 'gray',
+    marginTop: 10,
+    padding: 10,
+  },
+  errorMessage: {
+    color: 'red',
+    marginTop: 5,
   },
 });
 

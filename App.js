@@ -3,18 +3,19 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import Auth from './components/auth_supabase/Auth';
 import Accounts from './components/auth_supabase/Account';
 import { StyleSheet } from 'react-native';
-import { AppContext, Micontexto } from './context/context';
 import Loading from './components/loading/Loading';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Pantalla from './Pages/Home'
 import Ajustes from './Pages/Config';
+import { AppContext, AppProvider } from './context/AppContext';
+import { LocationProvider  } from './context/LocationContext';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true)
-  const { session, datas } = useContext(Micontexto)
+  const { session, datas } = useContext(AppContext)
   const navigationRef = useRef(null)
 
   useEffect(() => {
@@ -31,7 +32,7 @@ const App = () => {
 
   let screenConfig;
 
-  if (session && session.user) {
+  if (session && session.user ) {
     if (datas) {
       screenConfig = (
         <>
@@ -56,7 +57,8 @@ const App = () => {
       <Stack.Screen name="Auth" component={Auth} options={{ headerShown: false }} />
     );
   }
-
+  
+  
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
@@ -73,9 +75,9 @@ const styles = StyleSheet.create({
   }
 })
 export default () => (
-  <AppContext>
-  
-    <App />
-    
-  </AppContext>
+  <AppProvider>
+    <LocationProvider>
+      <App />
+    </LocationProvider>
+  </AppProvider>
 );

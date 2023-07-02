@@ -2,14 +2,14 @@ import React, { useContext, useRef } from 'react';
 import { StyleSheet, Dimensions, TouchableWithoutFeedback, View, Text, Modal } from 'react-native';
 import { IconButton, useTheme, Avatar } from 'react-native-paper';
 import { Image } from 'react-native';
-import { Micontexto } from '../../context/context';
 import { useNavigation } from '@react-navigation/native';
+import { AppContext } from '../../context/AppContext';
 
 const { height, width } = Dimensions.get('window');
 
 const DrawerConfig = ({ onClose }) => {
   const { colors } = useTheme();
-  const { datas, avatarUrl, location } = useContext(Micontexto);
+  const { datas, avatarUrl, location } = useContext(AppContext);
   const navigation = useNavigation();
   const modalRef = useRef(null);
 
@@ -43,7 +43,7 @@ const DrawerConfig = ({ onClose }) => {
             </View>
             <Text style={styles.text}>{datas}</Text>
             <Text style={styles.text}>
-              {location.coords ? location.coords.latitude : ''} hola
+             {location && location.coords ? location.coords.latitude : ''}
             </Text>
 
             <View style={styles.drawerItem}>
