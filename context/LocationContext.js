@@ -36,7 +36,6 @@ const LocationProvider = ({ children }) => {
     getUsersWithRolesAndDistributors();
   }, []);
 
-  console.log(datosLocation)
   /* ESTA FUNCION ES PARA TRAERNOS LA UBICACION DEL CLIENTE */
   
   useEffect(() => {
@@ -88,6 +87,7 @@ const LocationProvider = ({ children }) => {
   function toRadians(degrees) {
     return degrees * (Math.PI / 180);
   }
+
   return (
     <LocationContext.Provider value={{
       dataMayoristas,

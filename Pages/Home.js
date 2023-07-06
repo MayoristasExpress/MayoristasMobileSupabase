@@ -21,6 +21,7 @@ const Pantalla = () => {
         </View>
       </View>
       <CarouselOferHome />
+      <Text style={styles.carouselTitle}>Mayoristas Cercanos</Text>
       <MayoristasCarousel/>
       <Button title="Cerrar sesión" onPress={() => supabase.auth.signOut()} />
     </View>
@@ -52,6 +53,14 @@ const styles = StyleSheet.create({
     width: "85%",
     marginTop: 15,
     marginLeft: 52,
+  },
+  carouselTitle: {
+    width: '100%',
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginLeft: 10,
   },
 });
 

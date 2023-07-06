@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet, ScrollView, Image, TouchableOpacity, Text, FlatList } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, TouchableOpacity, Text, FlatList ,ImageBackground } from 'react-native';
 import { LocationContext } from '../../context/LocationContext';
 import { useNavigation } from '@react-navigation/native';
 
 const MayoristasCarousel = () => {
   const { dataMayoristas, datosLocation } = useContext(LocationContext);
   const navigation = useNavigation();
-
+  console.log(dataMayoristas)
   // Obtener el mayorista más cercano
   const mayoristaCercano = datosLocation.length > 0 ? datosLocation[0] : null;
 
@@ -16,7 +16,7 @@ const MayoristasCarousel = () => {
         onPress={() => navigation.navigate('DetallesMayorista', { mayorista: item })}
         style={styles.carouselItem}
       >
-        <Image source={{ uri: item.avatar_url }} style={styles.avatar} />
+        <Image source={{ uri:`https://gvtqrhqslwauidfkmmyf.supabase.co/storage/v1/object/public/avatars/${item.avatar_url}`}} style={styles.avatar} />
         <Text style={styles.fullName}>{item.full_name}</Text>
       </TouchableOpacity>
     );
@@ -25,22 +25,27 @@ const MayoristasCarousel = () => {
   const keyExtractor = (item) => item.distributors.id.toString();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.carouselTitle}>Mayoristas Cercanos</Text>
-      <FlatList
-        horizontal
-        data={dataMayoristas}
-        renderItem={renderMayoristaItem}
-        keyExtractor={keyExtractor}
-      />
-    </View>
+      <ImageBackground
+          source={require('../../assets/gato.jpg')}
+          style={styles.backgroundImage}
+          resizeMode="cover"
+      >
+          <View style={styles.container}>
+              
+              <FlatList
+                  horizontal
+                  data={dataMayoristas}
+                  renderItem={renderMayoristaItem}
+                  keyExtractor={keyExtractor}
+              />
+          </View>
+      </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 300, // Ajusta la altura del contenedor según tus necesidades
-    backgroundColor: 'skyblue',
+    height: 310, // Ajusta la altura del contenedor según tus necesidades
     justifyContent: 'center',
   },
   carouselTitle: {
@@ -54,16 +59,18 @@ const styles = StyleSheet.create({
   carouselItem: {
     alignItems: 'center',
     marginRight: 10,
+    marginLeft:10,
+    marginTop:30,
     width: 250,
     height: 250,
-    backgroundColor: 'green',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
     borderRadius: 10,
     padding: 10,
   },
   avatar: {
-    width: 150,
+    width: 200,
     height: 150,
-    borderRadius: 75,
+    resizeMode:"contain"
   },
   fullName: {
     marginTop: 10,
