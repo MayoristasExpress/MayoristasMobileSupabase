@@ -88,7 +88,6 @@ const LocationProvider = ({ children }) => {
   function toRadians(degrees) {
     return degrees * (Math.PI / 180);
   }
-
   return (
     <LocationContext.Provider value={{
       dataMayoristas,
