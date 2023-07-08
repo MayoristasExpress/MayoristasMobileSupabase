@@ -8,7 +8,7 @@ const LocationProvider = ({ children }) => {
   const [dataMayoristas, setDataMayoristas] = useState([])
   const [location, setLocation] = useState(null);
   const [datosLocation, setDatosLocation] = useState([])
-  
+  console.log(location)
   const getUsersWithRolesAndDistributors = async () => {
     try {
       const { data } = await supabase

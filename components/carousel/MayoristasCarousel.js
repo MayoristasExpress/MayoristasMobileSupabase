@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet, ScrollView, Image, TouchableOpacity, Text, FlatList ,ImageBackground } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, TouchableOpacity, Text, FlatList, ImageBackground, Button } from 'react-native';
 import { LocationContext } from '../../context/LocationContext';
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,14 +10,19 @@ const MayoristasCarousel = () => {
   // Obtener el mayorista más cercano
   const mayoristaCercano = datosLocation.length > 0 ? datosLocation[0] : null;
 
+  const handlePressMayo = () => {
+    navigation.navigate('Mayoristas');
+  };
+  
   const renderMayoristaItem = ({ item }) => {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate('DetallesMayorista', { mayorista: item })}
+        onPress={handlePressMayo}
         style={styles.carouselItem}
       >
         <Image source={{ uri:`https://gvtqrhqslwauidfkmmyf.supabase.co/storage/v1/object/public/avatars/${item.avatar_url}`}} style={styles.avatar} />
         <Text style={styles.fullName}>{item.full_name}</Text>
+        <Button title="Ir a mayorista" onPress={handlePressMayo} /> {/* Actualiza el onPress para ir a la página Mayoristas.js */}
       </TouchableOpacity>
     );
   };
@@ -25,27 +30,26 @@ const MayoristasCarousel = () => {
   const keyExtractor = (item) => item.distributors.id.toString();
 
   return (
-      <ImageBackground
-          source={require('../../assets/gato.jpg')}
-          style={styles.backgroundImage}
-          resizeMode="cover"
-      >
-          <View style={styles.container}>
-              
-              <FlatList
-                  horizontal
-                  data={dataMayoristas}
-                  renderItem={renderMayoristaItem}
-                  keyExtractor={keyExtractor}
-              />
-          </View>
-      </ImageBackground>
+    <ImageBackground
+      source={require('../../assets/gato.jpg')}
+      style={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <FlatList
+          horizontal
+          data={dataMayoristas}
+          renderItem={renderMayoristaItem}
+          keyExtractor={keyExtractor}
+        />
+      </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 310, // Ajusta la altura del contenedor según tus necesidades
+    height: 310,
     justifyContent: 'center',
   },
   carouselTitle: {
@@ -59,8 +63,8 @@ const styles = StyleSheet.create({
   carouselItem: {
     alignItems: 'center',
     marginRight: 10,
-    marginLeft:10,
-    marginTop:30,
+    marginLeft: 10,
+    marginTop: 30,
     width: 250,
     height: 250,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
@@ -70,13 +74,18 @@ const styles = StyleSheet.create({
   avatar: {
     width: 200,
     height: 150,
-    resizeMode:"contain"
+    resizeMode: "contain"
   },
   fullName: {
     marginTop: 10,
     fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
+  },
+  backgroundImage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

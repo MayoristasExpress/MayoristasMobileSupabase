@@ -4,6 +4,7 @@ import { IconButton, useTheme, Avatar } from 'react-native-paper';
 import { Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../context/AppContext';
+import {  supabase } from '../../lib/supabase';
 
 const { height, width } = Dimensions.get('window');
 
@@ -51,7 +52,7 @@ const DrawerConfig = ({ onClose }) => {
                 icon={() => (
                   <Image
                     source={require('../../assets/volver.png')}
-                    style={{ width: 50, height: 40, resizeMode: 'contain' }}
+                    style={{ width: 40, height: 35, resizeMode: 'contain' }}
                   />
                 )}
                 onPress={onClose}
@@ -70,6 +71,18 @@ const DrawerConfig = ({ onClose }) => {
                 onPress={handlePressConfig}
               />
               <Text style={styles.drawerLabel}>Mi Perfil</Text>
+            </View>
+            <View style={styles.drawerItem}>
+              <IconButton
+                icon={() => (
+                  <Image
+                    source={require('../../assets/cerrar-sesion.png')}
+                    style={{ width: 40, height: 30, resizeMode: 'contain' }}
+                  />
+                )}
+                onPress={() => supabase.auth.signOut()} 
+              />
+              <Text style={styles.drawerLabel}>Cerrar sesion</Text>
             </View>
           </View>
         </View>
