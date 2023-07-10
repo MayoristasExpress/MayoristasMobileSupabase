@@ -1,14 +1,18 @@
-import { Text, View, StyleSheet, Dimensions } from "react-native";
-import { Button } from 'react-native-elements';
+import React from "react";
+import { View, StyleSheet, Text } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 import Menus from "../components/Drawer/MenuHamburguesa";
 import Search from "../components/SearchBar/Search";
 import CarouselOferHome from "../components/carousel/OfertCarouselHome";
 import MayoristasCarousel from "../components/carousel/MayoristasCarousel";
 
-
 const Pantalla = () => {
+  const navigation = useNavigation();
 
-  
+  const handlePressMayo = () => {
+    navigation.navigate('Mayoristas');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.containerMenu}>
@@ -20,29 +24,28 @@ const Pantalla = () => {
         </View>
       </View>
       <CarouselOferHome />
-      <Text style={styles.carouselTitle}>Mayoristas Cercanos</Text>
-      <MayoristasCarousel/>
+      <View style={styles.carouselContainer}>
+        <Text style={styles.carouselTitle}>Mayoristas Cercanos</Text>
+        <MayoristasCarousel onPress={handlePressMayo} />
+      </View>
     </View>
   );
-}
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
-    backgroundColor: '#f1f1f1',
+    position: "relative",
+    backgroundColor: "#f1f1f1",
   },
-  containerMenu:{
-   backgroundColor:"#1995AD",
-   height:80,
-   zIndex: 9999, 
-   marginBottom: 20// Asegura que el contenedor del menú se superponga
+  containerMenu: {
+    backgroundColor: "#1995AD",
+    height: 80,
+    zIndex: 9999,
+    marginBottom: 20,
   },
   buttonsContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 15,
     left: 0,
     zIndex: 9999,
@@ -52,11 +55,15 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginLeft: 52,
   },
+  carouselContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+  },
   carouselTitle: {
-    width: '100%',
-    textAlign: 'center',
+    width: "100%",
+    textAlign: "center",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
     marginLeft: 10,
   },

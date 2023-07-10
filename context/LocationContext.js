@@ -1,23 +1,41 @@
+// LocationContext.js
+
 import React, { createContext, useState, useEffect } from 'react';
-import * as Location from "expo-location";
+import * as Location from 'expo-location';
 import { supabase } from '../lib/supabase';
 
 const LocationContext = createContext();
 
 const LocationProvider = ({ children }) => {
-  const [dataMayoristas, setDataMayoristas] = useState([])
+  const [dataMayoristas, setDataMayoristas] = useState([]);
   const [location, setLocation] = useState(null);
-  const [datosLocation, setDatosLocation] = useState([])
-  console.log(location)
+  const [datosLocation, setDatosLocation] = useState([]);
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radio de la Tierra en kilómetros
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
+  };
+
+  const toRadians = (degrees) => {
+    return degrees * (Math.PI / 180);
+  };
+
   const getUsersWithRolesAndDistributors = async () => {
     try {
       const { data } = await supabase
         .from('users')
         .select(`
-         full_name,
-         avatar_url,
-         distributors(*)
-        `)
+          full_name,
+          avatar_url,
+          distributors(*)
+        `);
       if (data) {
         const filteredData = data.filter((user) => user.distributors !== null);
         setDataMayoristas(filteredData);
@@ -31,13 +49,11 @@ const LocationProvider = ({ children }) => {
       return null;
     }
   };
-  
+
   useEffect(() => {
     getUsersWithRolesAndDistributors();
   }, []);
 
-  /* ESTA FUNCION ES PARA TRAERNOS LA UBICACION DEL CLIENTE */
-  
   useEffect(() => {
     const getLocationAsync = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -69,30 +85,14 @@ const LocationProvider = ({ children }) => {
     getLocationAsync();
   }, [dataMayoristas]);
 
-
-  //funcion para calcular el radio de la tierra y comparar la distancia entre el punto A y B
-
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371; // Radio de la Tierra en kilómetros
-    const dLat = toRadians(lat2 - lat1);
-    const dLon = toRadians(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
-  }
-
-  function toRadians(degrees) {
-    return degrees * (Math.PI / 180);
-  }
-
   return (
-    <LocationContext.Provider value={{
-      dataMayoristas,
-      location,
-      datosLocation}}>
+    <LocationContext.Provider
+      value={{
+        dataMayoristas,
+        location,
+        datosLocation
+      }}
+    >
       {children}
     </LocationContext.Provider>
   );

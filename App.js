@@ -19,7 +19,6 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true)
   const { session, datas } = useContext(AppContext)
   const navigationRef = useRef(null)
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);

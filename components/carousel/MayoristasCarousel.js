@@ -1,29 +1,42 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet, ScrollView, Image, TouchableOpacity, Text, FlatList, ImageBackground, Button } from 'react-native';
-import { LocationContext } from '../../context/LocationContext';
+import { View, StyleSheet, ScrollView, Image, Text, FlatList, ImageBackground, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { LocationContext } from '../../context/LocationContext';
 
 const MayoristasCarousel = () => {
-  const { dataMayoristas, datosLocation } = useContext(LocationContext);
   const navigation = useNavigation();
-  console.log(dataMayoristas)
-  // Obtener el mayorista más cercano
-  const mayoristaCercano = datosLocation.length > 0 ? datosLocation[0] : null;
+  const { dataMayoristas, location, datosLocation } = useContext(LocationContext);
 
-  const handlePressMayo = () => {
-    navigation.navigate('Mayoristas');
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radio de la Tierra en kilómetros
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance;
   };
-  
+
+  const toRadians = (degrees) => {
+    return degrees * (Math.PI / 180);
+  };
+
+  const handlePressMayo = (avatarUrl) => {
+    navigation.navigate('Mayoristas', { avatarUrl });
+  };
+
   const renderMayoristaItem = ({ item }) => {
+    const distance = calculateDistance(location.coords.latitude, location.coords.longitude, item.distributors.latitude, item.distributors.longitude);
+
     return (
-      <TouchableOpacity
-        onPress={handlePressMayo}
-        style={styles.carouselItem}
-      >
-        <Image source={{ uri:`https://gvtqrhqslwauidfkmmyf.supabase.co/storage/v1/object/public/avatars/${item.avatar_url}`}} style={styles.avatar} />
+      <View style={styles.carouselItem}>
+        <Image source={{ uri: `https://gvtqrhqslwauidfkmmyf.supabase.co/storage/v1/object/public/avatars/${item.avatar_url}` }} style={styles.avatar} />
         <Text style={styles.fullName}>{item.full_name}</Text>
-        <Button title="Ir" onPress={handlePressMayo} /> 
-      </TouchableOpacity>
+        <Text style={styles.distance}>{distance.toFixed(2)} km</Text>
+        <Button title="Ir" onPress={() => handlePressMayo(item.avatar_url)} />
+      </View>
     );
   };
 
@@ -35,36 +48,29 @@ const MayoristasCarousel = () => {
       style={styles.backgroundImage}
       resizeMode="cover"
     >
-      <View style={styles.container}>
-        <FlatList
-          horizontal
-          data={dataMayoristas}
-          renderItem={renderMayoristaItem}
-          keyExtractor={keyExtractor}
-        />
-      </View>
+      <ScrollView horizontal>
+        <View style={styles.container}>
+          <FlatList
+            data={dataMayoristas}
+            renderItem={renderMayoristaItem}
+            keyExtractor={keyExtractor}
+          />
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 310,
-    justifyContent: 'center',
-  },
-  carouselTitle: {
-    width: '100%',
-    textAlign: 'center',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginLeft: 10,
+    flexDirection: 'row',
+    paddingTop: 30,
+    paddingBottom: 10,
   },
   carouselItem: {
     alignItems: 'center',
     marginRight: 10,
     marginLeft: 10,
-    marginTop: 30,
     width: 250,
     height: 250,
     backgroundColor: 'rgba(255, 255, 255, 0.5)',
@@ -74,12 +80,17 @@ const styles = StyleSheet.create({
   avatar: {
     width: 200,
     height: 150,
-    resizeMode: "contain"
+    resizeMode: 'contain',
   },
   fullName: {
     marginTop: 10,
     fontSize: 16,
     fontWeight: 'bold',
+    color: 'white',
+  },
+  distance: {
+    marginTop: 5,
+    fontSize: 14,
     color: 'white',
   },
   backgroundImage: {
