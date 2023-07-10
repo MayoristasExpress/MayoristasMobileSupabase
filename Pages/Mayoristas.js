@@ -1,11 +1,10 @@
 import { Text, View, StyleSheet } from "react-native";
-import Menus from "../components/Drawer/MenuHamburguesa";
 
 const MayoristasPage = () => {
   return (
     <View style={styles.container}>
       <View style={styles.buttonsContainer}>
-      <Menus/>
+      
       </View>
       <Text style={styles.title}> Notificaciones </Text>
     </View>
@@ -29,6 +28,6 @@ const styles = StyleSheet.create({
     marginTop: 300,
   },
 });
-export default MayoristasPage ;
+export default MayoristasPage;
 
 

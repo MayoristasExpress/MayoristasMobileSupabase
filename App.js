@@ -10,7 +10,7 @@ import Pantalla from './Pages/Home'
 import Ajustes from './Pages/Config';
 import { AppContext, AppProvider } from './context/AppContext';
 import { LocationProvider  } from './context/LocationContext';
-import MayoristasPage from './Pages/Mayoristas';
+import MayoristasPages from './Pages/Mayoristas'
 
 
 const Stack = createStackNavigator();
@@ -40,7 +40,7 @@ const App = () => {
         <>
           <Stack.Screen name="Home" component={Pantalla} options={{ headerShown: false }} />
           <Stack.Screen name="Configuracion" component={Ajustes} options={{ headerShown: false }} />
-
+          <Stack.Screen name="Mayoristas" component={MayoristasPages} options={{ headerShown: false }} />
         </>
       );
     } else {
@@ -49,8 +49,7 @@ const App = () => {
           <Stack.Screen name="Account" component={Accounts} options={{ headerShown: false }} initialParams={{ session }} />
           <Stack.Screen name="Home" component={Pantalla} options={{ headerShown: false }} />
           <Stack.Screen name="Configuracion" component={Ajustes} options={{ headerShown: false }} />
-          <Stack.Screen name="Mayoristas" component={MayoristasPage} options={{ headerShown: false }} />
-
+          <Stack.Screen name="Mayoristas" component={MayoristasPages} options={{ headerShown: false }} />
         </>
 
       );

@@ -22,7 +22,7 @@ const MayoristasCarousel = () => {
       >
         <Image source={{ uri:`https://gvtqrhqslwauidfkmmyf.supabase.co/storage/v1/object/public/avatars/${item.avatar_url}`}} style={styles.avatar} />
         <Text style={styles.fullName}>{item.full_name}</Text>
-        <Button title="Ir a mayorista" onPress={handlePressMayo} /> {/* Actualiza el onPress para ir a la página Mayoristas.js */}
+        <Button title="Ir" onPress={handlePressMayo} /> 
       </TouchableOpacity>
     );
   };

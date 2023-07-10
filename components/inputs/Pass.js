@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { TextInput, DefaultTheme } from 'react-native-paper';
+import { TextInput, DefaultTheme, IconButton } from 'react-native-paper';
 import { AppContext } from '../../context/AppContext';
 
 const PassValue = () => {
@@ -36,18 +36,11 @@ const PassValue = () => {
       focused={isFocused}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      placeholder="Type something"
       style={{ width: '90%', marginTop: 30 }}
       secureTextEntry={!showPassword} // Mostrar la contraseña solo si showPassword es true
       theme={theme} // Aplicar el tema personalizado
-      right={
-        <TextInput.Icon
-          name={showPassword ? 'eye-off' : 'eye'}
-          onPress={handleTogglePassword}
-          forceTextInputFocus={false}
-          style={{ marginRight: 10, zIndex: 1 }}
-        />
-      }
-      rightStyle={{ position: 'absolute', right: 0 }}
+      right={ showPassword ?  <TextInput.Icon  icon="eye-off" onPress={handleTogglePassword} />:<TextInput.Icon  icon="eye" onPress={handleTogglePassword} />}
     />
   );
 };
