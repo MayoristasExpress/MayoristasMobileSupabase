@@ -8,7 +8,7 @@ import MayoristasCarousel from "../components/carousel/MayoristasCarousel";
 
 const Pantalla = () => {
   const navigation = useNavigation();
-
+  const [searchQuery, setSearchQuery] = React.useState('');
   const handlePressMayo = () => {
     navigation.navigate('Mayoristas');
   };
@@ -20,13 +20,13 @@ const Pantalla = () => {
           <Menus />
         </View>
         <View style={styles.searchContainer}>
-          <Search />
+          <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
         </View>
       </View>
       <CarouselOferHome />
       <View style={styles.carouselContainer}>
         <Text style={styles.carouselTitle}>Mayoristas Cercanos</Text>
-        <MayoristasCarousel onPress={handlePressMayo} />
+        <MayoristasCarousel onPress={handlePressMayo} searchQuery={searchQuery} />
       </View>
     </View>
   );

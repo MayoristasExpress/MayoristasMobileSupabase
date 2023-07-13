@@ -3,10 +3,13 @@ import { View, StyleSheet, ScrollView, Image, Text, FlatList, ImageBackground, B
 import { useNavigation } from '@react-navigation/native';
 import { LocationContext } from '../../context/LocationContext';
 
-const MayoristasCarousel = () => {
+const MayoristasCarousel = ({ onPress, searchQuery }) => {
   const navigation = useNavigation();
   const { dataMayoristas, location, datosLocation } = useContext(LocationContext);
-
+  
+  const filteredData = dataMayoristas.filter(mayorista =>
+    mayorista.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const R = 6371; // Radio de la Tierra en kilómetros
     const dLat = toRadians(lat2 - lat1);
@@ -22,13 +25,16 @@ const MayoristasCarousel = () => {
   const toRadians = (degrees) => {
     return degrees * (Math.PI / 180);
   };
-
   const handlePressMayo = (avatarUrl) => {
     navigation.navigate('Mayoristas', { avatarUrl });
   };
 
   const renderMayoristaItem = ({ item }) => {
-    const distance = calculateDistance(location.coords.latitude, location.coords.longitude, item.distributors.latitude, item.distributors.longitude);
+  const distance = calculateDistance(location.coords.latitude, location.coords.longitude, item.distributors.latitude, item.distributors.longitude);
+
+  const filteredData = dataMayoristas.filter((mayorista) =>
+        mayorista.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
     return (
       <View style={styles.carouselItem}>
@@ -40,6 +46,7 @@ const MayoristasCarousel = () => {
     );
   };
 
+      
   const keyExtractor = (item) => item.distributors.id.toString();
 
   return (
@@ -51,7 +58,7 @@ const MayoristasCarousel = () => {
       <ScrollView horizontal>
         <View style={styles.container}>
           <FlatList
-            data={dataMayoristas}
+            data={filteredData}
             renderItem={renderMayoristaItem}
             keyExtractor={keyExtractor}
           />
