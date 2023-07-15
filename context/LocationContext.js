@@ -91,6 +91,7 @@ const LocationProvider = ({ children }) => {
   return (
     <LocationContext.Provider value={{
       dataMayoristas,
+      calculateDistance,
       location,
       datosLocation}}>
       {children}

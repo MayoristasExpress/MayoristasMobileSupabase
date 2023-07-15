@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: 500,
-    height: '100%',
+    height: 250,
     marginRight: 10,
   },
   carouselImage: {

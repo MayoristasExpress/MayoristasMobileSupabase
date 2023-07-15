@@ -5,26 +5,12 @@ import { LocationContext } from '../../context/LocationContext';
 
 const MayoristasCarousel = ({ onPress, searchQuery }) => {
   const navigation = useNavigation();
-  const { dataMayoristas, location, datosLocation } = useContext(LocationContext);
+  const { dataMayoristas, location, calculateDistance } = useContext(LocationContext);
   
   const filteredData = dataMayoristas.filter(mayorista =>
     mayorista.full_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radio de la Tierra en kilómetros
-    const dLat = toRadians(lat2 - lat1);
-    const dLon = toRadians(lon2 - lon1);
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
-  };
 
-  const toRadians = (degrees) => {
-    return degrees * (Math.PI / 180);
-  };
   const handlePressMayo = (avatarUrl) => {
     navigation.navigate('Mayoristas', { avatarUrl });
   };
@@ -50,11 +36,6 @@ const MayoristasCarousel = ({ onPress, searchQuery }) => {
   const keyExtractor = (item) => item.distributors.id.toString();
 
   return (
-    <ImageBackground
-      source={require('../../assets/gato.jpg')}
-      style={styles.backgroundImage}
-      resizeMode="cover"
-    >
       <ScrollView horizontal>
         <View style={styles.container}>
           <FlatList
@@ -64,7 +45,6 @@ const MayoristasCarousel = ({ onPress, searchQuery }) => {
           />
         </View>
       </ScrollView>
-    </ImageBackground>
   );
 };
 
@@ -99,11 +79,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 14,
     color: 'white',
-  },
-  backgroundImage: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
 
