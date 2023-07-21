@@ -105,6 +105,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 4, // Esto es necesario para que la sombra funcione en dispositivos Android
+  },
+  CarouselOferHomeTitle:{
+    textAlign:"center",
+    backgroundColor:"orange",
+    borderTopLeftRadius:25,
+    borderTopRightRadius:25,
+    marginBottom:18
+    
   }
   
 

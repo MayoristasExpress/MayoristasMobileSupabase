@@ -1,20 +1,19 @@
 import React, { useContext, useState } from "react";
-import { Text, View, StyleSheet, TouchableOpacity, Image, Modal, Button, TextInput } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { AppContext } from "../context/AppContext";
 import Menus from "../components/Drawer/MenuHamburguesa";
 import Avatars1 from "../components/inputs/Avatar";
 import { supabase } from '../lib/supabase';
+import { TextInput, DefaultTheme } from "react-native-paper";
 
 const Ajustes = () => {
   const { getProfile, session, setAvatarUrl, avatarUrl, datosUser } = useContext(AppContext);
-
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
-  const [selectedSection, setSelectedSection] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-
+  const [showModal, setShowModal] = useState(false);
+  const [updatedFullName, setUpdatedFullName] = useState(datosUser.full_name);
+  const [updatedAddress, setUpdatedAddress] = useState(datosUser.address);
+  
+  
   const handlePicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images
@@ -27,15 +26,25 @@ const Ajustes = () => {
     }
   };
 
-  const modificar = (section) => {
-    setSelectedSection(section);
-    setIsPopupVisible(true);
-    setInputValue('');
-    setError('');
+  // Función para mostrar el modal
+  const handleShowModal = () => {
+    setShowModal(true);
   };
 
-  const handleInputChange = (text) => {
-    setInputValue(text);
+  // Función para ocultar el modal y descartar los cambios
+  const handleCancelChanges = () => {
+    setShowModal(false);
+  };
+
+  // Función para guardar los cambios y ocultar el modal
+  const handleSaveChanges = () => {
+    const updates = {
+      full_name: updatedFullName,
+      adress: updatedAddress
+    }
+    updateProfiles(updates)
+    setShowModal(false);
+    getProfile()
   };
 
   async function updateProfiles(updates) {
@@ -65,19 +74,12 @@ const Ajustes = () => {
     }
   }
 
-  const cambiarTodo = async () => {
-    if (!inputValue.trim()) {
-      setError('El campo debe contener información');
-      return;
-    }
-
-    setIsLoading(true);
-    await updateProfiles({
-      [selectedSection]: inputValue
-    });
-    getProfile();
-    setIsLoading(false);
-    setIsPopupVisible(false);
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: '#1995AD', // Cambiar el color de los bordes a rojo
+    },
   };
 
   return (
@@ -91,88 +93,53 @@ const Ajustes = () => {
       <Text style={styles.title}>Toque la imagen para cambiar</Text>
       <Text style={styles.info}>Informacion Personal</Text>
 
-      <View style={styles.infoContainer}>
-        <View style={styles.mailContainer}>
-          <Image
-            source={require('../assets/email.png')}
-            style={styles.mail}
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.texto}>E-mail</Text>
-          <Text style={styles.textoEmail}>{datosUser.username}</Text>
-        </View>
-        <View style={styles.ButtonContainer}>
-          <TouchableOpacity onPress={() => modificar(datosUser.username)}>
-            <Image
-              source={require('../assets/boligrafo.png')}
-              style={styles.button}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.line} />
+      <TextInput
+        mode="outlined"
+        label={datosUser.username}
+        placeholder="Email"
+        style={{ width: '90%', marginTop: 30 }}
+        theme={theme}
+      />
 
-      <View style={styles.infoContainer}>
-        <View style={styles.mailContainer}>
-          <Image
-            source={require('../assets/ajustes.png')}
-            style={styles.mail}
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.texto}>Nombre</Text>
-          <Text style={styles.textoEmail}>{datosUser.full_name}</Text>
-        </View>
-        <View style={styles.ButtonContainer}>
-          <TouchableOpacity onPress={() => modificar('full_name')}>
-            <Image
-              source={require('../assets/boligrafo.png')}
-              style={styles.button}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.line} />
+      <TextInput
+        mode="outlined"
+        label={datosUser.full_name}
+        placeholder="Nombre"
+        style={{ width: '90%', marginTop: 30 }}
+        theme={theme}
+        value={updatedFullName}
+        onChangeText={setUpdatedFullName}
+      />
 
-      <View style={styles.infoContainer}>
-        <View style={styles.mailContainer}>
-          <Image
-            source={require('../assets/ajustes.png')}
-            style={styles.mail}
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.texto}>Direccion</Text>
-          <Text style={styles.textoEmail}>{datosUser.adress}</Text>
-        </View>
-        <View style={styles.ButtonContainer}>
-          <TouchableOpacity onPress={() => modificar('adress')}>
-            <Image
-              source={require('../assets/boligrafo.png')}
-              style={styles.button}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.line} />
+      <TextInput
+        mode="outlined"
+        label={datosUser.adress}
+        placeholder="Direccion"
+        style={{ width: '90%', marginTop: 30 }}
+        theme={theme}
+        value={updatedAddress}
+        onChangeText={setUpdatedAddress}
+      />
 
-      <Modal visible={isPopupVisible} animationType="slide">
-        <View style={styles.popupContainer}>
-          <Text>Editar</Text>
-          <TextInput
-            style={styles.input}
-            placeholder={` ${selectedSection}`}
-            value={inputValue}
-            onChangeText={handleInputChange}
-          />
-          {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
-          <Button
-            title="Aceptar"
-            onPress={() => cambiarTodo()}
-            disabled={isLoading}
-          />
-          <Button title="Cerrar" onPress={() => setIsPopupVisible(false)} />
+      <TouchableOpacity style={styles.button} onPress={handleShowModal}>
+        <Text style={styles.buttonText}>Guardar Cambios</Text>
+      </TouchableOpacity>
+
+      <Modal visible={showModal} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>¿Estás seguro de los cambios?</Text>
+            <View style={styles.modalButtonsContainer}>
+              {/* Botón para aceptar los cambios */}
+              <TouchableOpacity style={styles.modalButton} onPress={handleSaveChanges}>
+                <Text style={styles.modalButtonText}>Aceptar</Text>
+              </TouchableOpacity>
+              {/* Botón para cancelar los cambios */}
+              <TouchableOpacity style={styles.modalButton2} onPress={handleCancelChanges}>
+                <Text style={styles.modalButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
     </View>
@@ -183,90 +150,82 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor:"#fff"
   },
   title: {
-    marginTop: 10,
+    marginTop: 20,
   },
   info: {
     fontSize: 30,
-    textAlign: "left",
+    textAlign: "center",
     width: "100%",
-    marginTop: 30
+    marginTop: 20
   },
   buttonsContainer: {
     position: 'absolute',
-    top: 15,
+    top: 0,
     left: 0,
     zIndex: 9999,
-    backgroundColor: "red"
+    backgroundColor: "#1995AD",
+    width:"100%"
   },
   AvatarButton: {
     alignItems: "center",
-    marginTop: 49
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 30,
-    width: '100%',
-  },
-  textContainer: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  texto: {
-    width: "100%",
-    fontSize: 18
-  },
-  textoEmail: {
-    width: "100%",
-    fontSize: 10
-  },
-  mailContainer: {
-    width: 65,
-    alignItems: "center"
-  },
-  mail: {
-    width: 35,
-    height: 35,
-    marginLeft: 5
-  },
-  ButtonContainer: {
-    width: 65,
-    alignItems: "center",
-    marginRight: 12
+    marginTop: 100
   },
   button: {
-    width: 25,
-    height: 25,
-    resizeMode: 'contain',
-    alignSelf: 'flex-end',
+    backgroundColor: '#1995AD',
+    paddingVertical: 9,
+    paddingHorizontal: 24,
+    marginTop: 30,
+    width: 320
   },
-  line: {
-    width: "70%",
-    height: 1,
-    backgroundColor: "black",
-    marginVertical: 10,
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
   },
-  popupContainer: {
+  modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white",
-    padding: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Fondo semi-transparente para el modal
   },
-  input: {
-    width: '100%',
-    height: 40,
-    borderWidth: 1,
-    borderColor: 'gray',
-    marginTop: 10,
-    padding: 10,
+  modalContent: {
+    width: 350, // Ancho del contenido del modal en 500 píxeles
+    height: 350, // Alto del contenido del modal en 500 píxeles
+    padding: 20, // Padding dentro del contenido del modal
+    backgroundColor: "white", // Puedes cambiar este color si lo deseas
+    borderRadius: 10, // Radio de borde para que parezca un cuadrado
+    justifyContent: "center", // Centra el contenido verticalmente
+    alignItems: "center", // Centra el contenido horizontalmente
   },
-  errorMessage: {
-    color: 'red',
-    marginTop: 5,
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+
+  modalButton: {
+    backgroundColor: '#1995AD',
+    paddingVertical: 9,
+    paddingHorizontal: 24,
+    marginHorizontal: 10, // Espacio horizontal entre los botones
+    width: 150, // Ancho de los botones
+    marginTop: 30,
+  },
+  modalButton2: {
+    backgroundColor: 'red',
+    paddingVertical: 9,
+    paddingHorizontal: 24,
+    marginHorizontal: 10, // Espacio horizontal entre los botones
+    width: 150, // Ancho de los botones
+    marginTop: 15,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
 
