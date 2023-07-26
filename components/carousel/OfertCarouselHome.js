@@ -77,16 +77,17 @@ const CarouselOferHome = () => {
 
 const styles = StyleSheet.create({
   carouselContainer: {
-    height: 200,
+    height: 170,
     marginBottom: 10,
     position: 'relative',
+
   },
   scrollViewContent: {
     paddingRight: 10,
   },
   imageContainer: {
     width: 500,
-    height: 250,
+    height: 150,
     marginRight: 10,
   },
   carouselImage: {

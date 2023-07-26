@@ -5,6 +5,7 @@ import Menus from "../components/Drawer/MenuHamburguesa";
 import Search from "../components/SearchBar/Search";
 import CarouselOferHome from "../components/carousel/OfertCarouselHome";
 import MayoristasCarousel from "../components/carousel/MayoristasCarousel";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Pantalla = () => {
   const navigation = useNavigation();
@@ -14,34 +15,48 @@ const Pantalla = () => {
   };
 
   return (
-    
     <View style={styles.container}>
-      <View style={styles.containerMenu}>
-        <View style={styles.buttonsContainer}>
-          <Menus />
+      <LinearGradient
+        colors={["#fff", "#1995AD","#1995AD" ]} // Adjust the gradient colors here
+        start={{ x: 0, y: 0.7 }}
+        end={{ x: 0, y: 0 }}
+        style={styles.gradient}
+      >
+        <View style={styles.containerMenu}>
+          <View style={styles.buttonsContainer}>
+            <Menus />
+          </View>
+          <View style={styles.searchContainer}>
+            <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          </View>
         </View>
-        <View style={styles.searchContainer}>
-          <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <View style={styles.CarouselOferHomeContainer}>
+          <View style={styles.CarouselOfer}>
+            <Text style={styles.CarouselOferHomeTitle}>Ofertas Mayoristas</Text>
+            <CarouselOferHome />
+          </View>
         </View>
-      </View>
-      <View style={styles.CarouselOferHomeContainer}>
-        <View style={styles.CarouselOfer}>
-          <Text style={styles.CarouselOferHomeTitle}>Ofertas Mayoristas</Text>
-          <CarouselOferHome />
+        <View style={styles.CarouselContainer}>
+          <View style={styles.CarouselShadow}>
+            <Text style={styles.carouselTitle}>Mayoristas Cercanos</Text>
+            <MayoristasCarousel onPress={handlePressMayo} searchQuery={searchQuery} />
+          </View>
         </View>
-      </View>
-      <View style={styles.CarouselContainer}>
-      <View style={styles.CarouselShadow}>
-        <Text style={styles.carouselTitle}>Mayoristas Cercanos</Text>
-        <MayoristasCarousel onPress={handlePressMayo} searchQuery={searchQuery} />
-      </View>
-      </View>
-
+      </LinearGradient>
     </View>
+
   );
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 500,
+    zIndex: 1, // Adjust this value if needed
+  },
   container: {
     flex: 1,
     position: "relative",
@@ -66,27 +81,29 @@ const styles = StyleSheet.create({
   },
   CarouselContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 10,
     width: "100%",
-    height: 300,
+    height: 400,
+    marginTop:20
   },
   carouselTitle: {
     width: "100%",
     textAlign: "center",
     fontSize: 18,
     fontWeight: "bold",
+    backgroundColor:"red",
+    borderTopLeftRadius:5,
+    borderTopRightRadius:5,
   },
   CarouselOferHomeContainer: {
     width: "100%",
     alignItems: 'center',
-    height: 250,
+    height: 230,
   },
   CarouselOfer: {
     width: "90%",
-    height: 250,
+    height: 230,
     backgroundColor: "#FFF",
-    borderRadius: 25,
+    borderRadius: 5,
     justifyContent: 'center',
     shadowColor: '#171717',
     shadowOffset: { width: -2, height: 4 },
@@ -99,7 +116,7 @@ const styles = StyleSheet.create({
     height: 250,
     backgroundColor: "#FFF",
     alignItems: 'center',
-    borderRadius: 25,
+    borderRadius: 5,
     shadowColor: '#171717',
     shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
@@ -109,14 +126,11 @@ const styles = StyleSheet.create({
   CarouselOferHomeTitle:{
     textAlign:"center",
     backgroundColor:"orange",
-    borderTopLeftRadius:25,
-    borderTopRightRadius:25,
-    marginBottom:18
+    borderTopLeftRadius:5,
+    borderTopRightRadius:5,
+    marginBottom:20
     
   }
-  
-
-
 });
 
 export default Pantalla;

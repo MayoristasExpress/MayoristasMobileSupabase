@@ -51,34 +51,33 @@ const MayoristasCarousel = ({ onPress, searchQuery }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingTop: 30,
+    paddingTop: 10,
     paddingBottom: 10,
+
   },
   carouselItem: {
     alignItems: 'center',
     marginRight: 10,
     marginLeft: 10,
-    width: 250,
-    height: 250,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-    borderRadius: 10,
+    width: 300,
+    height: 300,
     padding: 10,
   },
   avatar: {
-    width: 200,
-    height: 150,
+    width: 120,
+    height: 70,
     resizeMode: 'contain',
   },
   fullName: {
     marginTop: 10,
     fontSize: 16,
     fontWeight: 'bold',
-    color: 'white',
+    color: 'black',
   },
   distance: {
     marginTop: 5,
     fontSize: 14,
-    color: 'white',
+    color: 'black',
   },
 });
 
